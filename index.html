@@ -213,6 +213,133 @@
                 <div class="micro-cards-grid">${microCardsHTML}</div>
             `;
         }
-    </script>
+    </script> 
+    // --- LIVE FUNCTIONALITY FOR THE CALCULATOR PREVIEW ---
+
+// 1. Show Conditional Input Field when a goal is selected
+document.querySelectorAll('input[name="goal"]').forEach(radio => {
+    radio.addEventListener('change', function() {
+        const conditionalField = document.getElementById('conditional-field');
+        conditionalField.style.display = 'block';
+
+        const goal = this.value;
+        const detailInput = document.getElementById('detail');
+
+        // Dynamic placeholder update based on goal
+        if (goal === 'loss') {
+            detailInput.placeholder = "E.g., 0.5 kg per week";
+        } else if (goal === 'immune') {
+            detailInput.placeholder = "E.g., Acute Flu or Chronic Stress";
+        } else if (goal === 'muscle') {
+            detailInput.placeholder = "E.g., Lean Bulk or Aggressive Bulk";
+        } else if (goal === 'recovery') {
+            detailInput.placeholder = "E.g., Post-Surgery or Intense Marathon Recovery";
+        }
+    });
+});
+
+// 2. Handle Form Submission and Dynamic Results Display
+document.getElementById('nutrition-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // --- ACTUAL CALCULATION WOULD HAPPEN HERE ---
+    // We are generating a dummy result based on the goal for the preview.
+    
+    const goal = document.querySelector('input[name="goal"]:checked').value;
+    const resultsContainer = document.getElementById('results').querySelector('.container');
+    
+    // Generate the results structure
+    const dynamicContent = generateResultsHTML(goal);
+    
+    // Update the results section with the new content
+    resultsContainer.innerHTML = dynamicContent;
+    document.getElementById('results').style.display = 'block';
+    
+    // Scroll to the results section smoothly
+    document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+});
+
+// Function to create the results HTML (simulating dynamic data)
+function generateResultsHTML(goal) {
+    let protein = "105g";
+    let calories = "2000 kcal";
+    let rationale = "Set for balanced intake. Your targets prioritize maintenance.";
+    let microCardsHTML = '';
+    let microTitle = 'General Wellness';
+
+    if (goal === 'muscle') {
+        protein = "150g";
+        calories = "2800 kcal";
+        rationale = "Optimized for **Muscle Gain**. Protein is $\mathbf{2.0\text{g/kg}}$ to support an aggressive growth phase.";
+        microTitle = 'Muscle Building & Recovery';
+        microCardsHTML = `
+            <div class="micro-card focus-mg"><span class="icon"><i class="fa-solid fa-seedling"></i></span><h5>Magnesium</h5><p>Target: **420mg**</p><p class="tip">Essential for muscle function and quality sleep.</p></div>
+            <div class="micro-card focus-mg"><span class="icon"><i class="fa-solid fa-fish"></i></span><h5>Omega-3s</h5><p>Target: **2.5g**</p><p class="tip">Reduce muscle inflammation and speed recovery.</p></div>
+            <div class="micro-card focus-mg"><span class="icon"><i class="fa-solid fa-bone"></i></span><h5>Vitamin D</h5><p>Target: **5000IU**</p><p class="tip">Supports testosterone and bone density.</p></div>
+        `;
+    } else if (goal === 'immune') {
+        protein = "115g";
+        calories = "2200 kcal";
+        rationale = "Targets are boosted for **Immune Support**. Increased protein and micronutrients are key for defense.";
+        microTitle = 'Acute Immune Support';
+        microCardsHTML = `
+            <div class="micro-card focus-im"><span class="icon"><i class="fa-solid fa-lemon"></i></span><h5>Vitamin C</h5><p>Target: **1500mg**</p><p class="tip">High dose for antioxidant and defense support.</p></div>
+            <div class="micro-card focus-im"><span class="icon"><i class="fa-solid fa-flask"></i></span><h5>Zinc</h5><p>Target: **50mg**</p><p class="tip">Critical for immune cell development and function.</p></div>
+            <div class="micro-card focus-im"><span class="icon"><i class="fa-solid fa-sun"></i></span><h5>Vitamin D</h5><p>Target: **4000IU**</p><p class="tip">Modulates immune response; very high need during sickness.</p></div>
+        `;
+    } else if (goal === 'loss') {
+        protein = "130g";
+        calories = "1800 kcal";
+        rationale = "Optimized for **Weight Loss**. Protein is high to maximize satiety and muscle retention during your calorie deficit.";
+        microTitle = 'Fat Loss & Satiety';
+         microCardsHTML = `
+            <div class="micro-card focus-df"><span class="icon"><i class="fa-solid fa-wheat-awn"></i></span><h5>Fiber</h5><p>Target: **35g**</p><p class="tip">Crucial for satiety and gut health during deficit.</p></div>
+            <div class="micro-card focus-df"><span class="icon"><i class="fa-solid fa-fire"></i></span><h5>Chromium</h5><p>Target: **200mcg**</p><p class="tip">Supports healthy blood sugar metabolism and reduces cravings.</p></div>
+            <div class="micro-card focus-df"><span class="icon"><i class="fa-solid fa-leaf"></i></span><h5>Calcium</h5><p>Target: **1200mg**</p><p class="tip">May play a role in regulating fat absorption.</p></div>
+        `;
+    } else if (goal === 'recovery') {
+        protein = "120g";
+        calories = "2500 kcal";
+        rationale = "Focused on **Recovery**. Calories and protein are elevated to repair tissue and replenish energy stores.";
+        microTitle = 'Tissue Repair & Energy Replenishment';
+        microCardsHTML = `
+            <div class="micro-card focus-df"><span class="icon"><i class="fa-solid fa-heart-pulse"></i></span><h5>B12 & Folate</h5><p>Target: **200% RDA**</p><p class="tip">Essential for red blood cell and DNA synthesis for cellular repair.</p></div>
+            <div class="micro-card focus-df"><span class="icon"><i class="fa-solid fa-bottle-water"></i></span><h5>Iron</h5><p>Target: **Increased 25%**</p><p class="tip">Replenishes stores often depleted by physical stress/blood loss.</p></div>
+            <div class="micro-card focus-df"><span class="icon"><i class="fa-solid fa-leaf"></i></span><h5>Vitamin K</h5><p>Target: **100% RDA**</p><p class="tip">Aids in blood clotting and bone mineralization (especially post-surgery).</p></div>
+        `;
+    }
+
+    // This is the final HTML that gets injected into the Results section:
+    return `
+        <h3>Your Custom Daily Fuel Targets 🎯</h3>
+
+        <div class="macro-card">
+            <h4>MACRONUTRIENT BREAKDOWN</h4>
+            <div class="macro-values">
+                <div class="macro-item">
+                    <span class="value main-protein-value">${protein}</span>
+                    <span class="label">Protein</span>
+                </div>
+                <div class="macro-item">
+                    <span class="value">${calories}</span>
+                    <span class="label">Total Calories</span>
+                </div>
+                <div class="macro-item">
+                    <span class="value">45%</span>
+                    <span class="label">Carbs</span>
+                </div>
+                <div class="macro-item">
+                    <span class="value">30%</span>
+                    <span class="label">Fats</span>
+                </div>
+            </div>
+            <p class="rationale-text">${rationale}</p>
+        </div>
+
+        <h4 class="micro-title">MICRONUTRIENT FOCUS (${microTitle})</h4>
+        <div class="micro-cards-grid">${microCardsHTML}</div>
+    `;
+}
 </body>
+
 </html>
